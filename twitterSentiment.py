@@ -6,6 +6,8 @@ from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score, classification_report
+
 # nltk.download('stopwords')
 # nltk.download('punkt')
 
@@ -48,5 +50,10 @@ X_test_tfidf = tfidf_vectorizer.transform(test_df['clean_text'])
 
 model = LogisticRegression()
 model.fit(X_train_tfidf, train_df['category'])
+
+val_predictions = model.predict(X_val_tfidf)
+accuracy = accuracy_score(val_df['category'], val_predictions)
+print(f"Validation Accuracy: {accuracy:.2f}")
+print(classification_report(val_df['category'], val_predictions))
 
 
