@@ -4,7 +4,8 @@ import nltk
 from sklearn.model_selection import train_test_split
 from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
-
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.linear_model import LogisticRegression
 # nltk.download('stopwords')
 # nltk.download('punkt')
 
@@ -36,10 +37,16 @@ def preprocessing(text:str):
 df['clean_text'] = df['clean_text'].apply(preprocessing)
 print(df.head())
 
-# Split the dataset into training, validation, and test sets
 train_df, val_test_df = train_test_split(df, test_size=0.3, random_state=42)
 val_df, test_df = train_test_split(val_test_df, test_size=0.5, random_state=42)
 
+tfidf_vectorizer = TfidfVectorizer(max_features=10000)
 
+X_train_tfidf = tfidf_vectorizer.fit_transform(train_df['clean_text'])
+X_val_tfidf = tfidf_vectorizer.transform(val_df['clean_text'])
+X_test_tfidf = tfidf_vectorizer.transform(test_df['clean_text'])
+
+model = LogisticRegression()
+model.fit(X_train_tfidf, train_df['category'])
 
 
