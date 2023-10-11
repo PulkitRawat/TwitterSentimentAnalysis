@@ -4,7 +4,6 @@ import nltk
 from sklearn.model_selection import train_test_split
 from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
-from transformers import BertTokenizer, TFBertForSequenceClassification 
 
 # nltk.download('stopwords')
 # nltk.download('punkt')
@@ -29,19 +28,18 @@ df = df.dropna(subset=['clean_text', 'category'])
 
 def preprocessing(text:str):
     text = text.lower()
-    tokenized = train_df['clean_text'].apply((lambda x: tokenizer.encode(x, add_special_tokens=True, max_length=128, truncation=True)))
-    return tokenized
+    tokens = word_tokenize(text)
+    tokens = [word for word in tokens if word not in stopwords.words('english')]
+    text = ' '.join(tokens)
+    return text
 
+df['clean_text'] = df['clean_text'].apply(preprocessing)
+print(df.head())
 
+# Split the dataset into training, validation, and test sets
 train_df, val_test_df = train_test_split(df, test_size=0.3, random_state=42)
 val_df, test_df = train_test_split(val_test_df, test_size=0.5, random_state=42)
 
-model_name = 'bert-base-uncased'  
-tokenizer = BertTokenizer.from_pretrained(model_name)
-model = TFBertForSequenceClassification.from_pretrained(model_name)
-
-train_df['clean_text'] = train_df['clean_text'].apply(preprocessing)
-print(train_df.head())
 
 
 
