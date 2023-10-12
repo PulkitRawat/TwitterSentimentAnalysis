@@ -18,7 +18,6 @@ df = pd.read_csv('Twitter_Data.csv')
 df = df.drop_duplicates()
 df = df.dropna(subset=['clean_text', 'category'])
 
-# # print(df.head())
 # duplicates = df.duplicated()
 # df_duplicate = df[duplicates]
 # print('duplicate rows')
